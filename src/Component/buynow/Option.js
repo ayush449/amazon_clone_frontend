@@ -10,7 +10,7 @@ function Option() {
         <option value="4">4</option>
     </select>
     <p>Delete</p><span>|</span>
-    <p className="forremovemedia">Save Or Later</p><span>|</span>
+    <p className="forremovemedia">Save Or Later or ayush kumar</p><span>|</span>
     <p className="forremovemedia">See More like this</p>
     
 </div>
