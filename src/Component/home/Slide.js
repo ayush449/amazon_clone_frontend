@@ -23,7 +23,7 @@ const responsive = {
 
 function Slide({title,products}) {
 // console.log("abcd");
-console.log(products);
+//console.log(products);
      return (
         <div className='products_section'>
         <div className="products_deal">

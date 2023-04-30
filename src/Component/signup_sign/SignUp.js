@@ -21,7 +21,22 @@ const adddata = (e) => {
   })
 };
 
+const senddata = async (e) => {
+  e.preventDefault();
+  const { fname, email, mobile, password, cpassword } = udata;
+  const res = await fetch("/register", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        fname, email, mobile, password, cpassword
+    })
+});
 
+const data = await res.json();
+console.log(data);
+}
 
 
   return (
@@ -75,8 +90,9 @@ const adddata = (e) => {
                                  value={udata.cpassword}
                                 id="passwordg" />
                         </div>
-              <button type="submit" className="signin_btn" >
+              <button  type="submit" className="signin_btn" onClick={senddata} >
                 Continue
+
               </button>
               <div className="signin_info">
                             <p>Already have an account?</p>

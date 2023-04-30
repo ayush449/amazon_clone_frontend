@@ -2,6 +2,7 @@
   "name": "amazon_clone",
   "version": "0.1.0",
   "private": true,
+  "proxy":"http://localhost:8005/",
   
   "dependencies": {
     "@emotion/react": "^11.10.6",

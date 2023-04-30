@@ -60,7 +60,7 @@ function Sign_in() {
           </div>
           <div className="create_accountinfo">
                     <p>New to Amazon?</p>
-                    <button>  <NavLink to="/Signup">Create your Amazon Account</NavLink></button>
+                    <button>  <NavLink to="/register">Create your Amazon Account</NavLink></button>
                 </div>
         </div>
       </section> 
