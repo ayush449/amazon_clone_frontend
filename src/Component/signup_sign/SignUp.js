@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function SignUp() {
   const [udata, setUdata] = useState({
     fname: "",
@@ -35,9 +37,22 @@ const senddata = async (e) => {
 });
 
 const data = await res.json();
-console.log(data);
-}
+//console.log(data);
+if (res.status === 422 || !data) {
+  toast.error("Invalid Details!", {
+      position: "top-center"
+  });
+} else {
+  setUdata({
+      ...udata, fname: "", email: "",
+      mobile: "", password: "", cpassword: ""
+  });
 
+  toast.success("Registration Successfully done!", {
+    position: "top-center"
+});
+}
+}
 
   return (
     <section>
@@ -100,7 +115,7 @@ console.log(data);
                         </div>
             </form>
           </div>
-         
+          <ToastContainer />
         </div>
       </section>
   )

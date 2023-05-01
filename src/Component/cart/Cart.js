@@ -33,6 +33,33 @@ function Cart() {
   useEffect(() => {
     setTimeout(getinddata, 1000)
 },[id]);
+//add cart items
+const addtocart = async (id) => {
+    console.log(id);
+    const check = await fetch(`/addcart/${id}`, {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            inddata
+        }),
+        credentials: "include"
+    });
+    // console.log(check);
+    const data1 = await check.json();
+    console.log(data1 +  'frontend data');
+
+    if (check.status === 401 || !data1) {
+        alert("user invalid"); 
+    } else {
+        // console.log("cart add ho gya hain");
+        alert("data added in your cart");
+         
+        
+    }
+} 
 
   return (
     <div className="cart_section">
@@ -41,7 +68,7 @@ function Cart() {
             <div className="left_cart">
                 <img src={inddata.detailUrl} alt="cart" />
                 <div className="cart_btn">
-                    <button className="cart_btn1" >Add to Cart</button>
+                    <button className="cart_btn1" onClick={() => addtocart(inddata.id)}>Add to Cart</button>
                     <button className="cart_btn2">Buy Now</button>
                 </div>
 

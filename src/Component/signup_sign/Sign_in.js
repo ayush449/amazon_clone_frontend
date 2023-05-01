@@ -1,11 +1,14 @@
-import React,  { useContext, useState } from "react";
+import React,  { useState } from "react";
 import { NavLink } from 'react-router-dom';
 import "./signup.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 function Sign_in() {
 
-  
+
   const [logdata, setData] = useState({
       email: "",
       password: ""
@@ -15,12 +18,49 @@ function Sign_in() {
     const { name, value } = e.target;
     // console.log(name, value);
 
-    setData((pre) => {
+    setData(() => {
         return {
-            ...pre,
+            ...logdata,
             [name]: value
         }
     })
+};
+
+
+const senddata = async (e) => {
+  e.preventDefault();
+
+  const { email, password } = logdata;
+  // console.log(email);
+ 
+      const res = await fetch("/login", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+              email, password
+          })
+      });
+
+
+      const data = await res.json();
+      // console.log(data);
+
+      if (res.status === 400 || !data) {
+          console.log("invalid details");
+          toast.error("Invalid Details !", {
+              position: "top-center"
+          });
+      } else {
+        
+        toast.success("Login Successfully done !", {
+          position: "top-center"
+      });
+          setData({ ...logdata, email: "", password: "" }); 
+         
+      }
+  
 };
 
 
@@ -53,10 +93,11 @@ function Sign_in() {
                   value={logdata.password}
                 />
               </div>
-              <button type="submit" className="signin_btn">
+              <button type="submit" className="signin_btn" onClick={senddata}>
                 Continue
               </button>
             </form>
+            <ToastContainer />
           </div>
           <div className="create_accountinfo">
                     <p>New to Amazon?</p>
