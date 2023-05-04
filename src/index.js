@@ -6,9 +6,11 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router, Route, BrowserRouter } from "react-router-dom";
 import {Provider} from "react-redux";
 import store from './store';
+import Contextprovider from "./Component/context/Contextprovider";
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
+  <Contextprovider>
   <Provider store={store}> 
   <BrowserRouter>
     <App />
@@ -16,6 +18,8 @@ root.render(
   </BrowserRouter>
   </Provider>
   
+  </Contextprovider>
+
  
 );
 

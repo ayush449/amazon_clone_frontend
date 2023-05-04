@@ -1,66 +1,187 @@
-import React from 'react'
- import "./NavBar.css"
+import { React, useContext ,useEffect ,useState } from "react";
+import "./NavBar.css";
 
- import SearchIcon from "@material-ui/icons/Search";
- import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
- import { NavLink } from 'react-router-dom';
-
+import SearchIcon from "@material-ui/icons/Search";
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import Badge from "@mui/material/Badge";
+import Avatar from '@mui/material/Avatar';
+import { NavLink, useNavigate } from "react-router-dom";
+import MenuIcon from '@mui/icons-material/Menu';
+import { Drawer, IconButton, List, ListItem } from '@mui/material';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import { Logincontext } from "../context/Contextprovider";
+import RightHeader from "../header1/Rightheader";
+import LogoutIcon from '@mui/icons-material/Logout';
+import { ToastContainer, toast } from 'react-toastify';
 function Navigation() {
-  return (
-    <div className="header">
-      <NavLink to="/">
-      <img
-      className="header__logo"
-      src="http://pngimg.com/uploads/amazon/amazon_PNG11.png" alt=''
-    />
-      </NavLink>
-    
-  
+  const { account, setAccount } = useContext(Logincontext);
+  const [dropen, setDropen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const history = useNavigate("");
+  console.log(account+"nav bar hi");
+  const getdetailsvaliduser = async () => {
+    const res = await fetch("/validuser", {
+        method: "GET",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        credentials: "include"
+    });
 
-  <div className="header__search">
-    <input className="header__searchInput" type="text" />
-    <SearchIcon className="header__searchIcon" />
-  </div>
+    const data = await res.json();
+     console.log(data +"navigation");
 
-  <div className="header__nav">
-    
-      <div className="header__option">
-        <span className="header__optionLineOne">Hello Guest</span>
-        <span className="header__optionLineTwo">
-        <NavLink style={{color: "white"}} to="/login">Sign in</NavLink>
-
-
-          
-          </span>
-      </div>
-    
-
-    
-      <div className="header__option">
-        <span className="header__optionLineOne">Returns</span>
-        <span className="header__optionLineTwo">& Orders</span>
-      </div>
-    
-    
-
-    <div className="header__option">
-      <span className="header__optionLineOne">Your</span>
-      <span className="header__optionLineTwo">Prime</span>
-    </div>
-
-    
-      <div className="header__optionBasket">
-        <ShoppingBasketIcon />
-        <span className="header__optionLineTwo header__basketCount">
-          0
-        </span>
-      </div>
-    
-  </div>
- 
-</div>
-  )
+    if (res.status !== 201) {
+        console.log("first login");
+    } else {
+        // console.log("cart add ho gya hain");
+        setAccount(data);
+    }
 }
 
-export default Navigation
 
+
+useEffect(() => {
+  getdetailsvaliduser();
+}, []);
+
+    // for logout
+    const logoutuser = async () => {
+      const res2 = await fetch("/logout", {
+          method: "GET",
+          headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+          },
+          credentials: "include"
+      });
+
+      const data2 = await res2.json();
+      // console.log(data2);
+
+      if (!res2.status === 201) {
+          const error = new Error(res2.error);
+          throw error;
+      } else {
+        console.log("hey from right menu")
+          setAccount(false);
+          setOpen(false)
+          toast.success("user Logout !", {
+              position: "top-center"
+          });
+          history("/");
+      }
+  }
+
+const handleClick = (event) => {
+  setOpen(event.currentTarget);
+};
+
+const handelopen = () => {
+  setDropen(true);
+}
+const handleClose = () => {
+  setDropen(false);
+};
+
+const handleClosedr = () => {
+  console.log('Closing drawer')
+ setDropen(false)
+}
+
+// const getText = (text) => {
+//   setText(text)
+//   setLiopen(false)
+// }
+  return (
+    <div className="header">
+      <IconButton className="hamburgur" onClick={handelopen}>
+        <MenuIcon style={{ color: "#fff" }} />
+        <Drawer open={dropen} onClick={() => setDropen(false)} >
+          <RightHeader  userlog={logoutuser} logClose={handleClosedr} />
+        </Drawer>
+      </IconButton>
+
+      <NavLink to="/">
+        <img
+          className="header__logo"
+          src="http://pngimg.com/uploads/amazon/amazon_PNG11.png"
+          alt=""
+        />
+      </NavLink>
+
+      <div className="header__search">
+        <input className="header__searchInput" type="text" />
+        <SearchIcon className="header__searchIcon" />
+      </div>
+
+      <div className="header__nav">
+        <div className="header__option">
+          {
+            account? <span className="header__optionLineOne">Hello {account.fname}</span>:<span className="header__optionLineOne">Hello Guest</span>
+          }
+          
+          <span className="header__optionLineTwo">
+            {account ? <NavLink logoutuser style={{ color: "white" }} to="/logout">
+              Logout
+            </NavLink> :<NavLink style={{ color: "white" }} to="/login">
+              Sign in
+            </NavLink>}
+            
+          </span>
+        </div>
+
+        <div className="header__option">
+          <span className="header__optionLineOne">Returns</span>
+          <span className="header__optionLineTwo">& Orders</span>
+        </div>
+
+        <div className="header__option">
+          <span className="header__optionLineOne">Your</span>
+          <span className="header__optionLineTwo">Prime</span>
+        </div>
+
+        <div className="header__optionBasket">
+          <div className="cart_btn">
+            {account ? (
+              <NavLink to="/buynow">
+                <Badge badgeContent={account.carts.length} color="secondary">
+                  <ShoppingCartIcon />
+                </Badge>
+              </NavLink>
+            ) : (
+              <NavLink to="/login">
+                <Badge badgeContent={0} color="secondary">
+                  <i className="fas fa-shopping-cart" id="icon"></i>
+                </Badge>
+              </NavLink>
+            )}
+          </div>
+          {account ? (
+            <Avatar className="avatar2">
+              {account.fname[0].toUpperCase()}
+            </Avatar>
+          ) : (
+            <Avatar className="avtar"></Avatar>
+          )}
+
+{ <div className="menu_div">
+                        <Menu
+                            anchorEl={open}
+                            open={Boolean(open)}
+                            onClose={handleClose}
+                            
+                        >
+                            <MenuItem onClick={handleClose} style={{ margin: 10 }}>My account</MenuItem>
+                            {account ? <MenuItem onClick={handleClose} style={{ margin: 10 }} ><LogoutIcon style={{ fontSize: 16, marginRight: 3 }} />   Logout</MenuItem> : ""}
+                        </Menu>
+                    </div> }
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Navigation;
